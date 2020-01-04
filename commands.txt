@@ -1,0 +1,320 @@
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore>python django-admin startproject bookstore
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore>cd bookstore
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py runserver
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py startapp store
+# Create model Book in store\models.py
+# Prepare Migration
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py makemigrations store
+Migrations for 'store':
+  store\migrations\0001_initial.py
+    - Create model Book
+
+# See SQL commands corresponding Migration for store 0001
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py sqlmigrate store 0001
+BEGIN;
+--
+-- Create model Book
+--
+CREATE TABLE "store_book" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(200) NOT NULL, "author" varchar(200) NOT NULL, "description" text NOT NULL, "publish_date" date NOT NULL);
+COMMIT;
+
+# Execute Migration
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, store
+Running migrations:
+  Applying store.0001_initial... OK
+
+# Create superuser for admin (prikolis)
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py createsuperuser
+Username (leave blank to use 'vitaliy_ko'): admin
+Email address:
+Password:
+Password (again):
+Superuser created successfully.
+
+# Add BookAdmin class to store\admin.py It add Book management to admin web page
+# Add books via admin web page
+# Add 2 additional fields to model Book in store\models.py
+# Run additional migration
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py makemigrations store
+You are trying to add a non-nullable field 'price' to book without a default; we can't do that (the database needs something to populate existing rows).
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit, and let me add a default in models.py
+Select an option: 1
+Please enter the default value now, as valid Python
+The datetime and django.utils.timezone modules are available, so you can do e.g. timezone.now
+Type 'exit' to exit this prompt
+>>> 0.00
+Migrations for 'store':
+  store\migrations\0002_auto_20191128_1516.py
+    - Add field price to book
+    - Add field stock to book
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, store
+Running migrations:
+  Applying store.0002_auto_20191128_1516... OK
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+
+
+# --------------------------------------------------
+# Add user registration and login pages
+# Install additional package
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install django-registration-redux
+# Perform actions accoding to https://django-registration-redux.readthedocs.io/en/latest/quickstart.html#quickstart
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python  manage.py showmigrations registration
+registration
+ [ ] 0001_initial
+ [ ] 0002_registrationprofile_activated
+ [ ] 0003_migrate_activatedstatus
+ [ ] 0004_supervisedregistrationprofile
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python  manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, registration, sessions, store
+Running migrations:
+  Applying registration.0001_initial... OK
+  Applying registration.0002_registrationprofile_activated... OK
+  Applying registration.0003_migrate_activatedstatus... OK
+  Applying registration.0004_supervisedregistrationprofile... OK
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python  manage.py showmigrations registration
+registration
+ [X] 0001_initial
+ [X] 0002_registrationprofile_activated
+ [X] 0003_migrate_activatedstatus
+ [X] 0004_supervisedregistrationprofile
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+# Add Email settings to settings.py
+# now you can use  /accounts/register/, /accounts/login/ to register and login
+
+
+# --------------------------------------------------
+# Add login with social media
+# Install additional package
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install social-auth-app-django
+# Perform actions accoding to https://python-social-auth.readthedocs.io/en/latest/configuration/django.html
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py showmigrations
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+# Create developer account on https://developers.facebook.com/
+# Add additional settings in settings.py
+# Additional settings for Facebook
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
+# Add link in Login template and try to login
+
+
+# --------------------------------------------------
+# Static Files
+# Add static files and change basic.html template to load background image
+# Add to settings.py lines:
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
+
+
+# --------------------------------------------------
+# Add Bootsrap4
+# Install additional bootstrap packages
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install django-bootstrap4 django-bootstrap-themes
+# Add 'bootstrap4' and 'bootstrap-themes' INSTALLED_APPS in settings/py
+# Completely refactor base.html template and other registration templates
+
+
+# --------------------------------------------------
+# Add Additional models
+# Add new models Review, Author and foreignKey to it in Book in store/models.py
+# You need to delete books before start migration
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py makemigrations store
+Migrations for 'store':
+  store\migrations\0003_auto_20191224_1553.py
+    - Create model Author
+    - Remove field description from book
+    - Alter field author on book
+    - Create model Review
+
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate store
+Operations to perform:
+  Apply all migrations: store
+Running migrations:
+  Applying store.0003_auto_20191224_1553... OK
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+# Add AuthorAdmin class to store/admin.py
+
+# Update base.html template add foreach loop for books
+# Update store(request) in store/views.py
+# See the main page of store
+
+# Add sore derctory to templates and add detail.html template file + view and link to it in store/urls.py
+
+
+# --------------------------------------------------
+# Add Cart to the site
+# Add new models Cart, BookOrder
+# Add new views add_to_chart, remove_from_chart, chart
+# Update base.html (add cart)
+# Add template cart.html
+# Add links to store/urls.py
+# Update admin.py, add BookOrderAdmin and CartAdmin
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py makemigrations store
+Migrations for 'store':
+  store\migrations\0005_bokorder_cart.py
+    - Create model Cart
+    - Create model BookOrder
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate store
+Operations to perform:
+  Apply all migrations: store
+Running migrations:
+  Applying store.0005_bookorder_cart... OK
+
+
+
+# --------------------------------------------------
+# Integration with PayPal
+# Create account on developer.paypal.com
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install paypalrestsdk
+# Add views: checkout, checkout_paypal, order_error, process_order, complete_order
+# Add urls
+# Update templates cart.html
+# Add templates process_order.html, order_complete.html  and order_error.html
+
+
+# --------------------------------------------------
+# Add Stripe payment integration with AJAX
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install stripe
+# Add new view checkout_stripe and update existing views checkout, process_order and complete_order
+# Update template base.html, add scripts:
+# <script src="https://checkout.stripe.com/checkout.js"></script>
+# <script src="{% static 'base/js/jquery.cookie.js' %}"></script>
+# Add additional part related to stripe to cart.html template
+# Create templatetags package in store directory and add file custom_filters.py to it.
+
+
+
+# --------------------------------------------------
+# Files upload settings
+# Add to settings.py:
+# MEDIA_ROOT - Absolute filesystem path to the directory that will hold user-uploaded files
+# MEDIA_URL - URL that handles the media served from MEDIA_ROOT, used for managing stored files. It must end in a slash
+# if set to a non-empty value. You will need to configure these files to be served in both development and production
+# environments.
+# Add 'django.template.context_processors.media' to TEMPLATES in settings.py
+# In project urls.py add + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Add addition field to class Book in models.py:
+# cover_image = models.ImageField(upload_to='books/', default='books/empty_cover.jpg')
+# Update img src in base.html and detail.html templates
+# Install additional module:
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore>python -m pip install pillow
+# Pillow is the friendly PIL fork by Alex Clark and Contributors. PIL is the Python Imaging Library by Fredrik Lundh and Contributors.
+
+# Make migration
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py makemigrations
+Migrations for 'store':
+  store\migrations\0006_book_cover_image.py
+    - Add field cover_image to book
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, registration, sessions, social_django, store
+Running migrations:
+  Applying store.0006_book_cover_image... OK
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+
+# Create directory media/books/ and add empty_cover.jpg into it
+# You can add your images via admin site in Books Administration
+
+
+# --------------------------------------------------
+# Review Forms
+# Add forms.py file
+# Update book_details view in views.py and modify detail.html template
+
+
+# --------------------------------------------------
+# Advanced emailing
+# configure email settings in settings.py
+# Add additional code to book_details.view in views.py
+# Create email dir in templates and add 2 files review_email.html и review_email.txt
+
+
+# --------------------------------------------------
+# Creating WebService with tastypie (https://django-tastypie.readthedocs.io/en/latest/index.html#quick-start)
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore>python -m pip install django-tastypie
+# Add tastypie to APPS in setting.py and urls.py
+# Add api.py file to store directory
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py showmigrations tastypie
+tastypie
+ [ ] 0001_initial
+ [ ] 0002_api_access_url_length
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, registration, sessions, social_django, store, tastypie
+Running migrations:
+  Applying tastypie.0001_initial... OK
+  Applying tastypie.0002_api_access_url_length... OK
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+# run server and go to http://localhost:8000/api/v1/review/?format=json
+# {"meta": {"limit": 20, "next": null, "offset": 0, "previous": null, "total_count": 1}, "objects": [{"book": "", "id": 1, "publish_date": "2019-12-30", "resource_uri": "/api/v1/review/1/", "text": "Greate book", "user": {"resource_uri": "", "username": "admin"}}]}
+# http://localhost:8000/api/v1/review/?format=json&book=1
+# http://localhost:8000/api/v1/review/?format=json&book=2
+
+
+# --------------------------------------------------
+# Add Signals for stock value update
+# Create file store/signals.py
+# Add 2 templates for email purchase_email.txt and purchase_email.html
+# Add from . import signals to views.py file It makes this module avalabele for views.
+
+
+
+# --------------------------------------------------
+# Add Django Debug toolbar
+# Use https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#getting-the-code
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python -m pip install django-debug-toolbar
+# Add debug_toolbar to Apps and Middleware in settings.py + add INTERNAL_IPS
+# Restart the server and you will see debug toolbar from the right side of the page
+
+
+# --------------------------------------------------
+# Add Unittests
+# Add unittests to tests.py and run
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py test
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.059s
+
+OK
+Destroying test database for alias 'default'...
+
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>
+
+
+
+# --------------------------------------------------
+# Add Logging
+# Add LOGGING to setting.py file
+# After enabling logging you should run server with command:
+(venv) C:\Users\vitaliy_ko\PycharmProjects\bookstore\bookstore>python manage.py runserver --noreload
+# That is, when running Django development server, actually there are two processes running and without --noreload
+# you will got error
+# by default, two processes of Django servers are running. One is the actual server, while the other is to detect
+# changes in the code and reload the server. Therefore, settings.py is imported twice, and consequently the two
+# processes are accessing the log file at the same time.
+# Additionaly you can add import logging; logger = logging.getLogger(__name__) to any file and use logger to send
+# messages to log

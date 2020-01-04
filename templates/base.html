@@ -1,0 +1,79 @@
+{% extends 'bootstrap4/bootstrap4.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load bootstrap_themes %}
+{% bootstrap_styles theme='simplex' type='min.css' %}
+{% block bootstrap4_extra_head %}
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+    <link href="{% static 'base/css/style.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block bootstrap4_title %}
+    {% block title %}Welcome To Mystery Book!{% endblock %}
+{% endblock %}
+{% block bootstrap4_content %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<div class="container">
+  <a class="navbar-brand" href="{% url 'store:index' %}">Mystery book</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarResponsive">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:index' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        {%if request.user.is_authenticated %}<li class="nav-item"><a class="nav-link" href="{% url 'store:cart' %}">My Shopping Cart</a></li>{% endif %}
+    </ul>
+      <form class="form-inline my-2 my-lg-0">
+        {% if request.user.is_authenticated %}
+            Welcome, {% if request.user.first_name %}
+                {{ request.user.first_name }}
+            {% else %}
+                {{ request.user.username }}
+            {% endif %}!&nbsp;<a href="{% url 'auth_logout' %}">Log out</a>
+        {% else %}
+            Welcome, mysterious person!&nbsp;<a href="{% url 'auth_login' %}">Log in</a>&nbsp;or&nbsp;<a href="{% url 'registration_register' %}">Register</a>
+        {% endif %}
+    </form>
+  </div>
+</div>
+</nav>
+<!-- Page Content -->
+<div class="container-fluid" style="background-image: url({% static 'base/img/header_full.jpg' %});">
+    <div class="parallax">
+        <div class="row justify-content-center">
+            {% block body %}
+            <div class="col-md-8 cil-sm-12 maincontent">
+                <div class="text-center"><h3>Welcome to our store!</h3></div>
+                {% for book in books %}
+                <div class="storefront_book_display">
+                    <a href="{% url 'store:book_details' book.id %}">
+                        <!--- <img src="{% static 'base/img/empty_cover.jpg' %}"> -->
+                        <img src="{{ MEDIA_URL}}{{ book.cover_image }}">
+                        <span class="storefront_book_title">{{ book.title }}</span>
+                        <span class="storefront_book_author">{{ book.author }}</span>
+                    </a>
+                    {% if request.user.is_authenticated %}
+                    <span class="storefront_add_to_chart">
+                        <a href="{% url 'store:add_to_cart' book.id %}">[Add To Cart]</a>
+                    </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+<!-- Footer -->
+<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+    <div class="container text-center"><small>2019 Mystery Book</small></div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script src="{% static 'base/js/jquery.cookie.js' %}"></script>
+{% endblock %}
+{% block bootstrap4_extra_script %}
+{% endblock %}
